@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "filler-sound-detector"
+version = "0.1.0"
+description = "Detect filler sounds automatically!"
+authors = ["Pavlo Seimskyi <62653730+pavlo-seimskyi@users.noreply.github.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+pandas = "^1.5.0"
+torch = "^1.12.1"
+pytest = "^7.1.3"
+torchaudio = "^0.12.1"
+
+[tool.poetry.dev-dependencies]
+jupyter = "^1.0.0"
+jupyterlab = "^3.4.8"
+ipywidgets = "^8.0.2"
+black = "^22.10.0"
+isort = "^5.10.1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
