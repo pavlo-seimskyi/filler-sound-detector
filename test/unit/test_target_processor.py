@@ -1,9 +1,9 @@
 import functools
+
 import pytest
 import torch
 
 from src.preprocess.target_processor import TargetProcessor
-
 
 assert_equal = functools.partial(torch.testing.assert_close, rtol=1e-4, atol=1e-4)
 
