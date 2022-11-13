@@ -1,8 +1,8 @@
+import logging
 import os
 import re
 
 import pandas as pd
-import logging
 
 import constants
 
@@ -18,7 +18,12 @@ class LabelParser:
     Parses the original .txt file with start and end time of the filler sounds for every
     track. Saves the parsed annotations into .csv files, named after the speaker.
     """
-    def parse(self, original_labels_path=ORIGINAL_ANNOTATIONS_PATH, output_folder=constants.PARSED_ANNOTATION_FOLDER):
+
+    def parse(
+        self,
+        original_labels_path=ORIGINAL_ANNOTATIONS_PATH,
+        output_folder=constants.PARSED_ANNOTATION_FOLDER,
+    ):
         track_infos = self.read_original_annotations(original_labels_path)
         os.makedirs(output_folder, exist_ok=True)
         for track_info in track_infos:
@@ -46,7 +51,7 @@ class LabelParser:
     @staticmethod
     def read_lines(lines, header_row=4):
         lines = [line.split("\t") for line in lines]
-        df = pd.DataFrame(data=lines[header_row + 1:], columns=lines[header_row])
+        df = pd.DataFrame(data=lines[header_row + 1 :], columns=lines[header_row])
         return df.dropna()
 
     @staticmethod
