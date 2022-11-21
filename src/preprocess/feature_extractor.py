@@ -1,12 +1,12 @@
+import logging
 import os
 
+import IPython.display as ipd
+import torchaudio
 import torchaudio.functional as F
 import torchaudio.transforms as T
-import torchaudio
-import constants
-import logging
-import IPython.display as ipd
 
+import constants
 
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.StreamHandler())

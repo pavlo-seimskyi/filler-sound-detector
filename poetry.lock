@@ -593,6 +593,14 @@ MarkupSafe = ">=2.0"
 i18n = ["Babel (>=2.7)"]
 
 [[package]]
+name = "joblib"
+version = "1.2.0"
+description = "Lightweight pipelining with Python functions"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[[package]]
 name = "json5"
 version = "0.9.10"
 description = "A Python implementation of the JSON5 data format."
@@ -613,8 +621,6 @@ python-versions = ">=3.7"
 
 [package.dependencies]
 attrs = ">=17.4.0"
-importlib-resources = {version = ">=1.4.0", markers = "python_version < \"3.9\""}
-pkgutil-resolve-name = {version = ">=1.3.10", markers = "python_version < \"3.9\""}
 pyrsistent = ">=0.14.0,<0.17.0 || >0.17.0,<0.17.1 || >0.17.1,<0.17.2 || >0.17.2"
 
 [package.extras]
@@ -746,6 +752,17 @@ test = ["check-manifest", "coverage", "jupyterlab-server[test]", "pre-commit", "
 ui-tests = ["build"]
 
 [[package]]
+name = "jupyterlab-code-formatter"
+version = "1.5.3"
+description = "Code formatter for JupyterLab"
+category = "dev"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+jupyterlab = ">=3.0,<4.0"
+
+[[package]]
 name = "jupyterlab-pygments"
 version = "0.2.2"
 description = "Pygments theme using JupyterLab CSS variables"
@@ -791,6 +808,23 @@ description = "A fast implementation of the Cassowary constraint solver"
 category = "main"
 optional = false
 python-versions = ">=3.7"
+
+[[package]]
+name = "lightgbm"
+version = "3.3.3"
+description = "LightGBM Python Package"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+numpy = "*"
+scikit-learn = "!=0.22.0"
+scipy = "*"
+wheel = "*"
+
+[package.extras]
+dask = ["dask[array] (>=2.0.0)", "dask[dataframe] (>=2.0.0)", "dask[distributed] (>=2.0.0)", "pandas"]
 
 [[package]]
 name = "markupsafe"
@@ -1113,14 +1147,6 @@ python-versions = ">=3.7"
 [package.extras]
 docs = ["furo", "olefile", "sphinx (>=2.4)", "sphinx-copybutton", "sphinx-issues (>=3.0.1)", "sphinx-removed-in", "sphinxext-opengraph"]
 tests = ["check-manifest", "coverage", "defusedxml", "markdown2", "olefile", "packaging", "pyroma", "pytest", "pytest-cov", "pytest-timeout"]
-
-[[package]]
-name = "pkgutil-resolve-name"
-version = "1.3.10"
-description = "Resolve a name to an object."
-category = "dev"
-optional = false
-python-versions = ">=3.6"
 
 [[package]]
 name = "platformdirs"
@@ -1689,12 +1715,43 @@ optional = ["python-socks", "wsaccel"]
 test = ["websockets"]
 
 [[package]]
+name = "wheel"
+version = "0.38.4"
+description = "A built-package format for Python"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[package.extras]
+test = ["pytest (>=3.0.0)"]
+
+[[package]]
 name = "widgetsnbextension"
 version = "4.0.3"
 description = "Jupyter interactive widgets for Jupyter Notebook"
 category = "dev"
 optional = false
 python-versions = ">=3.7"
+
+[[package]]
+name = "xgboost"
+version = "1.7.1"
+description = "XGBoost Python Package"
+category = "main"
+optional = false
+python-versions = ">=3.8"
+
+[package.dependencies]
+numpy = "*"
+scipy = "*"
+
+[package.extras]
+dask = ["dask", "distributed", "pandas"]
+datatable = ["datatable"]
+pandas = ["pandas"]
+plotting = ["graphviz", "matplotlib"]
+pyspark = ["cloudpickle", "pyspark", "scikit-learn"]
+scikit-learn = ["scikit-learn"]
 
 [[package]]
 name = "zipp"
@@ -2037,10 +2094,6 @@ importlib-metadata = [
     {file = "importlib_metadata-5.0.0-py3-none-any.whl", hash = "sha256:ddb0e35065e8938f867ed4928d0ae5bf2a53b7773871bfe6bcc7e4fcdc7dea43"},
     {file = "importlib_metadata-5.0.0.tar.gz", hash = "sha256:da31db32b304314d044d3c12c79bd59e307889b287ad12ff387b3500835fc2ab"},
 ]
-importlib-resources = [
-    {file = "importlib_resources-5.10.0-py3-none-any.whl", hash = "sha256:ee17ec648f85480d523596ce49eae8ead87d5631ae1551f913c0100b5edd3437"},
-    {file = "importlib_resources-5.10.0.tar.gz", hash = "sha256:c01b1b94210d9849f286b86bb51bcea7cd56dde0600d8db721d7b81330711668"},
-]
 iniconfig = [
     {file = "iniconfig-1.1.1-py2.py3-none-any.whl", hash = "sha256:011e24c64b7f47f6ebd835bb12a743f2fbe9a26d4cecaa7f53bc4f35ee9da8b3"},
     {file = "iniconfig-1.1.1.tar.gz", hash = "sha256:bc3af051d7d14b2ee5ef9969666def0cd1a000e121eaea580d4a313df4b37f32"},
@@ -2072,6 +2125,10 @@ jedi = [
 jinja2 = [
     {file = "Jinja2-3.1.2-py3-none-any.whl", hash = "sha256:6088930bfe239f0e6710546ab9c19c9ef35e29792895fed6e6e31a023a182a61"},
     {file = "Jinja2-3.1.2.tar.gz", hash = "sha256:31351a702a408a9e7595a8fc6150fc3f43bb6bf7e319770cbc0db9df9437e852"},
+]
+joblib = [
+    {file = "joblib-1.2.0-py3-none-any.whl", hash = "sha256:091138ed78f800342968c523bdde947e7a305b8594b910a0fea2ab83c3c6d385"},
+    {file = "joblib-1.2.0.tar.gz", hash = "sha256:e1cee4a79e4af22881164f218d4311f60074197fb707e082e803b61f6d137018"},
 ]
 json5 = [
     {file = "json5-0.9.10-py2.py3-none-any.whl", hash = "sha256:993189671e7412e9cdd8be8dc61cf402e8e579b35f1d1bb20ae6b09baa78bbce"},
@@ -2187,6 +2244,13 @@ kiwisolver = [
     {file = "kiwisolver-1.4.4-pp39-pypy39_pp73-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:f6cb459eea32a4e2cf18ba5fcece2dbdf496384413bc1bae15583f19e567f3b2"},
     {file = "kiwisolver-1.4.4-pp39-pypy39_pp73-win_amd64.whl", hash = "sha256:36dafec3d6d6088d34e2de6b85f9d8e2324eb734162fba59d2ba9ed7a2043d5b"},
     {file = "kiwisolver-1.4.4.tar.gz", hash = "sha256:d41997519fcba4a1e46eb4a2fe31bc12f0ff957b2b81bac28db24744f333e955"},
+]
+lightgbm = [
+    {file = "lightgbm-3.3.3-py3-none-macosx_10_15_x86_64.macosx_11_6_x86_64.macosx_12_0_x86_64.whl", hash = "sha256:27b0ae82549d6c59ede4fa3245f4b21a6bf71ab5ec5c55601cf5a962a18c6f80"},
+    {file = "lightgbm-3.3.3-py3-none-manylinux1_x86_64.whl", hash = "sha256:389edda68b7f24a1755a6af4dad06e16236e374e9de64253a105b12982b153e2"},
+    {file = "lightgbm-3.3.3-py3-none-manylinux2014_aarch64.whl", hash = "sha256:b0af55bd476785726eaacbd3c880f8168d362d4bba098790f55cd10fe928591b"},
+    {file = "lightgbm-3.3.3-py3-none-win_amd64.whl", hash = "sha256:b334dbcd670e3d87f4ff3cfe31d652ab18eb88ad9092a02010916320549b7d10"},
+    {file = "lightgbm-3.3.3.tar.gz", hash = "sha256:857e559ae84a22963ce2b62168292969d21add30bc9246a84d4e7eedae67966d"},
 ]
 markupsafe = [
     {file = "MarkupSafe-2.1.1-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:86b1f75c4e7c2ac2ccdaec2b9022845dbb81880ca318bb7a0a01fbf7813e3812"},
@@ -2884,6 +2948,14 @@ websocket-client = [
 widgetsnbextension = [
     {file = "widgetsnbextension-4.0.3-py3-none-any.whl", hash = "sha256:7f3b0de8fda692d31ef03743b598620e31c2668b835edbd3962d080ccecf31eb"},
     {file = "widgetsnbextension-4.0.3.tar.gz", hash = "sha256:34824864c062b0b3030ad78210db5ae6a3960dfb61d5b27562d6631774de0286"},
+]
+xgboost = [
+    {file = "xgboost-1.7.1-py3-none-macosx_10_15_x86_64.macosx_11_0_x86_64.macosx_12_0_x86_64.whl", hash = "sha256:373d8e95f2f0c0a680ee625a96141b0009f334e132be8493e0f6c69026221bbd"},
+    {file = "xgboost-1.7.1-py3-none-macosx_12_0_arm64.whl", hash = "sha256:91dfd4af12c01c6e683b0412f48744d2d30d6754e33b297e40845e2d136b3d30"},
+    {file = "xgboost-1.7.1-py3-none-manylinux2014_aarch64.whl", hash = "sha256:18b9fbad68d2af60737618072e77a43f88eec1113a143f9498698eb5db0d9c41"},
+    {file = "xgboost-1.7.1-py3-none-manylinux2014_x86_64.whl", hash = "sha256:e96305eb8c8b6061d83ac9fef25437e8ebc8d9c9300e75b8d07f35de1031166b"},
+    {file = "xgboost-1.7.1-py3-none-win_amd64.whl", hash = "sha256:fbe06896e1b12843c7f428ae56da6ac1c5975545d8785f137f73fd591c54e5f5"},
+    {file = "xgboost-1.7.1.tar.gz", hash = "sha256:bb302c5c33e14bab94603940987940f29203ecb8767a7a719daf579fbfaace64"},
 ]
 zipp = [
     {file = "zipp-3.10.0-py3-none-any.whl", hash = "sha256:4fcb6f278987a6605757302a6e40e896257570d11c51628968ccb2a47e80c6c1"},
