@@ -15,6 +15,10 @@ Results:
 | Multi-layer perceptron | 0.075                | 0.109 |
 ```
 
+Nevertheless, achieving even some results with PyTorch is huge progress for me, given that I almost never used the library raw. It gives me motivation to improve the model by:
+1. Training an RNN and treating the features as sequence.
+2. Using augmentation.
+
 ---
 
 # Set up
@@ -48,7 +52,7 @@ Window and hopping length can be adjusted after evaluation to find the optimal t
 
 ## Features
 
-The audio frames are summarized as [Mel-frequency cepstral coefficients (MFCCs)](https://en.wikipedia.org/wiki/Mel-frequency_cepstrum). Essentially, we transforms the audio clip in such a way that tells us what frequencies were most activated during the speech, creating a kind of compressed spectrogram. It does so in a way that is similar to how we humans perceive sound, which makes MFCC feature very popular in speech recognition systems.
+The audio frames are transformed into [Mel-frequency cepstral coefficients (MFCCs)](https://en.wikipedia.org/wiki/Mel-frequency_cepstrum). Essentially, MFCC tells us what frequencies were most activated during the speech, creating a kind of compressed spectrogram. It represents the audio clip in a way that is similar to how we humans perceive sound, which makes MFCC a very popular feature in speech recognition systems.
 
 ![](img/mfcc.png)
 
@@ -107,5 +111,6 @@ Unfortunately, the model did not beat the baseline but came close in F1 score.
 
 1. **Treat audio frames as sequence:** So far, each audio frame was treated as individual independent training example. However, speech is actually a time series. Order matters. I suspect that treating the audio frames as sequence and using a RNN-like model such as LSTM will improve the results.
 2. **Use augmentation:** Although we have 22.3 GB of data, it actually boils down to a few dozens of speakers. Moreover, transforming the audio with MFCC reduces the data to just 5-8 MB per speaker. Augmentation techniques most probably will squeeze more value out of available data.
+3. **Play around with parameters:** I can use other parameters in `constants.py` such as the window length & hop length of frames as well as labeling threshold. 
 
 ---
