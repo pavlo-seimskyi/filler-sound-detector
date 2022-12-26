@@ -56,7 +56,7 @@ Turns out in 95% of fillers last longer than 0.279 sec. A good fit for window le
 To evaluate the models, I followed a few principles:
 - Use different speakers in training & evaluation. This will ensure the model learns to detect filler sounds well for new speakers.
 - Use the same threshold to decide what proportion of filler sound in a frame makes it labeled as `filler` (80%).   
-- Use a suitable evaluation metric for imbalanced datasets. [Average precision score (AP](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.average_precision_score.html) or area under the Precision-Recall Curve) seemed the best choice. It 1) is independent from the cutoff threshold and 2) focuses on the minority class and therefore is suitable for imbalanced datasets.
+- Use a suitable evaluation metric for imbalanced datasets. [Average precision score](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.average_precision_score.html) (area under the Precision-Recall Curve) seemed to be the best choice. It 1) is independent of the cutoff threshold and 2) focuses on the minority class and therefore is suitable for imbalanced datasets.
 
 ---
 
