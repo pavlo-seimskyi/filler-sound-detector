@@ -102,7 +102,7 @@ Then I picked multi-layer perceptron as the first neural model to train. Unfortu
    2. Adjust the learning rate
    3. Add regularization
 2. **Tune training configuration:** I can use other parameters in `constants.py` such as the window length & hop length of frames as well as labeling threshold.
-3. **Treat input data as time series:** So far, each audio frame was treated as individual independent training example. However, it is hard to tell if a small piece of audio is a filler sound without context. Speech is actually a time series where order matters. I suspect that passing a  sequence of audio frames instead of just one per training example would be a game changer. RNN models such as LSTM can be used.
+3. **Treat input data as time series:** So far, each audio frame was treated as individual independent training example. However, it is hard to tell if a small piece of audio is a filler sound without context. Speech is actually a time series where order matters. I suspect that passing a sequence of audio frames instead of just one per training example would improve the results. RNN models such as LSTM can be used.
 4. **Sushi method:** Pass raw data with no preprocessing to the neural network.
 
 # Conclusion
