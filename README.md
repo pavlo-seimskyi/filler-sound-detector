@@ -1,28 +1,11 @@
 # filler-sound-detector
-This project aims at detecting annoying filler sounds in an audio with help of ML.
 
----
-
-# TL;DR
-
-I could not obtain any practically good results so far. The established baseline is very low (10% F1 score), yet the neural net did not beat even that.
-
-Results:
-```markdown
-| Model                  | Avg. precision score | F1    |
-|------------------------|----------------------|-------|
-| LightGBM (baseline)    | 0.103                | 0.114 |
-| Multi-layer perceptron | 0.075                | 0.109 |
-```
-
-Nevertheless, achieving even some results with PyTorch is huge progress for me, given that I almost never used the library raw. It gives me motivation to improve the model by:
-1. Training an RNN and treating the features as sequence.
-2. Using augmentation.
+This project aims at detecting annoying filler sounds in an audio with help of machine learning.
 
 ---
 
 # Set up
-Depedencies are managed with `poetry`. Install it using [instructions here](https://python-poetry.org/docs/#installation).
+Depedencies are managed with `poetry`. Install poetry using [instructions](https://python-poetry.org/docs/#installation) and then install dependencies by executing this in the project folder:
 
 ```bash
 $ poetry install
@@ -52,7 +35,7 @@ Window and hopping length can be adjusted after evaluation to find the optimal t
 
 ## Features
 
-The audio frames are transformed into [Mel-frequency cepstral coefficients (MFCCs)](https://en.wikipedia.org/wiki/Mel-frequency_cepstrum). Essentially, MFCC tells us what frequencies were most activated during the speech, creating a kind of compressed spectrogram. It represents the audio clip in a way that is similar to how we humans perceive sound, which makes MFCC a very popular feature in speech recognition systems.
+The audio frames are transformed into [Mel-frequency cepstral coefficients (MFCCs)](https://en.wikipedia.org/wiki/Mel-frequency_cepstrum). It tells us what frequencies were most activated during the speech, creating a kind of compressed spectrogram. It represents the audio clip in a way that is similar to how we humans perceive sound, which makes MFCC a very popular feature in speech recognition systems.
 
 ![](img/mfcc.png)
 
@@ -70,20 +53,27 @@ Turns out in 95% of fillers last longer than 0.279 sec. A good fit for window le
 
 # Evaluation
 
-To evaluate the models, I use a few principles:
+To evaluate the models, I followed a few principles:
 - Use different speakers in training & evaluation. This will ensure the model learns to detect filler sounds well for new speakers.
 - Use the same threshold to decide what proportion of filler sound in a frame makes it labeled as `filler` (80%).   
-- Use [average precision score (AP)](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.average_precision_score.html) as the main metric (Area under the Precision-Recall Curve). What makes this metric perfect is that it 1) is independent from the cutoff threshold and 2) focuses on the minority class and therefore is suitable for imbalanced datasets. (link)
+- Use a suitable evaluation metric for imbalanced datasets. [Average precision score (AP](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.average_precision_score.html) or area under the Precision-Recall Curve) seemed the best choice. It 1) is independent from the cutoff threshold and 2) focuses on the minority class and therefore is suitable for imbalanced datasets.
 
 ---
 
 # Modeling
 
-Let's train!
+I tried out training two models: LightGBM & a multi-layer perceptron. LightGBM worked better out of the box.
 
-## Baseline
+```markdown
+| Model                  | Avg. precision score | F1    |
+|------------------------|----------------------|-------|
+| LightGBM               | 0.103                | 0.114 |
+| Multi-layer perceptron | 0.075                | 0.109 |
+```
 
-I trained a LightGBM model with reasonable default parameters to establish some baseline.  
+## LightGBM
+
+Before jumping into deep learning, I trained a LightGBM model with reasonable default parameters to establish some baseline.  
 
 ```
 | Avg. precision score | F1    |
@@ -95,9 +85,7 @@ I trained a LightGBM model with reasonable default parameters to establish some 
 
 ## Multi-layer perceptron
 
-I picked multi-layer perceptron as the first neural model to train. It was a good place to start learning how to build the end-to-end workflow of training a model with Pytorch. 
-
-Unfortunately, the model did not beat the baseline but came close in F1 score.
+Then I picked multi-layer perceptron as the first neural model to train. Unfortunately, the model did not beat the LGBM but came close in F1 score. The model probably requires more hyperparameter tuning.   
 
 ```
 | Avg. precision score | F1    |
@@ -109,8 +97,16 @@ Unfortunately, the model did not beat the baseline but came close in F1 score.
 
 ## Improvement ideas
 
-1. **Treat audio frames as sequence:** So far, each audio frame was treated as individual independent training example. However, speech is actually a time series. Order matters. I suspect that treating the audio frames as sequence and using a RNN-like model such as LSTM will improve the results.
-2. **Use augmentation:** Although we have 22.3 GB of data, it actually boils down to a few dozens of speakers. Moreover, transforming the audio with MFCC reduces the data to just 5-8 MB per speaker. Augmentation techniques most probably will squeeze more value out of available data.
-3. **Play around with parameters:** I can use other parameters in `constants.py` such as the window length & hop length of frames as well as labeling threshold. 
+1. **Tune the hyperparameters:**
+   1. Change the number of hidden layers
+   2. Adjust the learning rate
+   3. Add regularization
+2. **Tune training configuration:** I can use other parameters in `constants.py` such as the window length & hop length of frames as well as labeling threshold.
+3. **Treat input data as time series:** So far, each audio frame was treated as individual independent training example. However, it is hard to tell if a small piece of audio is a filler sound without context. Speech is actually a time series where order matters. I suspect that passing a  sequence of audio frames instead of just one per training example would be a game changer. RNN models such as LSTM can be used.
+4. **Sushi method:** Pass raw data with no preprocessing to the neural network.
+
+# Conclusion
+
+Until now, using the model isn't practically useful. Multi-layer perceptron will cut a lot of good sound, whereas LightGBM will leave a lot of filler sounds untouched.
 
 ---
