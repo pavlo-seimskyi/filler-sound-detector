@@ -12,7 +12,7 @@ class MultiLayerPerceptron(BaseEstimator):
         n_hidden: int,
         n_out: int = 1,
         dropout_proba=0.2,
-        **kwargs
+        **kwargs,
     ):
         super().__init__(**kwargs)
         self.in_layer = torch.nn.Linear(n_features, n_hidden)
