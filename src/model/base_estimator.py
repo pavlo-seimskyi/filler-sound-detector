@@ -1,3 +1,5 @@
+from typing import *
+
 import numpy as np
 import pandas as pd
 import torch
@@ -14,7 +16,7 @@ class BaseEstimator(torch.nn.Module):
         self,
         main_metric: str,
         batch_size: int = 32,
-        loss_fn=torch.nn.BCELoss(),
+        loss_fn: torch.nn.Module = torch.nn.BCELoss(),
         cutoff_thres: float = FILLER_LABELING_THRESHOLD,
     ):
         super().__init__()
@@ -65,7 +67,7 @@ class BaseEstimator(torch.nn.Module):
         metrics["loss"] = self.loss_fn(y_pred, y_true).item()
         self.add_to_history(epoch=epoch, dataset_name=name, metrics=metrics)
 
-    def train_epoch(self, x, y):
+    def train_epoch(self, x: torch.Tensor, y: torch.Tensor) -> torch.Tensor:
         self.train()
         dataloader = self.build_dataloader(x, y)
         y_pred = torch.Tensor([])
@@ -82,7 +84,7 @@ class BaseEstimator(torch.nn.Module):
             y_pred = torch.cat((y_pred, batch_pred.cpu().detach()), axis=0)
         return y_pred
 
-    def evaluate(self, x, y):
+    def evaluate(self, x: torch.Tensor, y: torch.Tensor) -> None:
         y_pred = self.predict(x)
         evaluate(y, y_pred, self.cutoff_thres)
 
@@ -97,7 +99,7 @@ class BaseEstimator(torch.nn.Module):
             y_pred = torch.cat((y_pred, batch_pred.cpu()), dim=0)
         return y_pred
 
-    def compute_class_weights(self, y):
+    def compute_class_weights(self, y: torch.Tensor) -> None:
         if not isinstance(y, np.ndarray):
             y = y.numpy()
         labels, counts = np.unique(y.astype(int), return_counts=True)
@@ -105,7 +107,7 @@ class BaseEstimator(torch.nn.Module):
             k: v for k, v in zip(np.flipud(labels), counts / counts.max())
         }
 
-    def get_class_weights(self, y):
+    def get_class_weights(self, y: torch.Tensor) -> torch.Tensor:
         y = y.type(torch.long)
         for target in torch.unique(y.type(torch.long)):
             assert (
@@ -116,14 +118,16 @@ class BaseEstimator(torch.nn.Module):
             weights[weights == class_] = weight
         return weights
 
-    def add_to_history(self, epoch, dataset_name, metrics):
+    def add_to_history(
+        self, epoch: int, dataset_name: str, metrics: Dict[str, float]
+    ) -> None:
         new_history = pd.DataFrame(
             data=[{**{"epoch": epoch, "dataset": dataset_name}, **metrics}]
         )
         self.history = pd.concat((self.history, np.round(new_history, 3)), axis=0)
         self.history.reset_index(drop=True)
 
-    def print_last_results(self):
+    def print_last_results(self) -> None:
         cols = ["epoch", "dataset", "loss", self.main_metric]
         last_results = self.history.iloc[-1][cols].to_dict()
         text = " | ".join([f"{k}: {v}" for k, v in last_results.items()])

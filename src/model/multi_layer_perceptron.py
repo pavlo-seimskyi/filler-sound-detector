@@ -1,12 +1,19 @@
 import torch
 from torch.utils.data import DataLoader
 
+from src.model.base_estimator import BaseEstimator
 from src.model.data_builder import OneSampleDataset
-from src.model.estimator import BaseEstimator
 
 
 class MultiLayerPerceptron(BaseEstimator):
-    def __init__(self, n_features, n_hidden, n_out, dropout_proba=0.2, **kwargs):
+    def __init__(
+        self,
+        n_features: int,
+        n_hidden: int,
+        n_out: int = 1,
+        dropout_proba=0.2,
+        **kwargs
+    ):
         super().__init__(**kwargs)
         self.in_layer = torch.nn.Linear(n_features, n_hidden)
         self.mid_layer = torch.nn.Linear(n_hidden, n_hidden)
