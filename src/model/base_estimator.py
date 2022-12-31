@@ -35,8 +35,8 @@ class BaseEstimator(torch.nn.Module):
         self.class_weights = None
         self.scheduler = None
         self.optimizer = None
-        self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-        self.to(self.device)
+        self.def_device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        self.to(self.def_device)
 
     def forward(self, x):
         pass
@@ -74,9 +74,9 @@ class BaseEstimator(torch.nn.Module):
     def train_epoch(self, x: torch.Tensor, y: torch.Tensor) -> torch.Tensor:
         self.train()
         dataloader = self.build_dataloader(x, y)
-        y_pred = torch.Tensor([]).to(self.device)
+        y_pred = torch.Tensor([]).to(self.def_device)
         for inputs, targets in dataloader:
-            inputs, targets = inputs.to(self.device), targets.to(self.device)
+            inputs, targets = inputs.to(self.def_device), targets.to(self.def_device)
             self.optimizer.zero_grad()
             batch_pred = self(inputs)
             self.loss_fn.weight = self.get_class_weights(targets)
@@ -90,9 +90,9 @@ class BaseEstimator(torch.nn.Module):
     def predict(self, x: torch.Tensor) -> torch.Tensor:
         self.eval()
         dataloader = self.build_dataloader(x)
-        y_pred = torch.Tensor([]).to(self.device)
+        y_pred = torch.Tensor([]).to(self.def_device)
         for inputs in dataloader:
-            inputs = inputs.to(self.device)
+            inputs = inputs.to(self.def_device)
             with torch.no_grad():
                 batch_pred = self(inputs)
             y_pred = torch.cat((y_pred, batch_pred), dim=0)
