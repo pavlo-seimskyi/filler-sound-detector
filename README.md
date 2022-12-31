@@ -85,25 +85,21 @@ Before jumping into deep learning, I trained a LightGBM model with reasonable de
 
 ## Multi-layer perceptron
 
-Then I picked multi-layer perceptron as the first neural model to train. Unfortunately, the model did not beat the LGBM but came close in F1 score. The model probably requires more hyperparameter tuning.   
+Then I picked multi-layer perceptron as the first neural model to train. After hyperparameter tuning, the model beats the LightGBM on both F1 and AP scores.
 
 ```
 | Avg. precision score | F1    |
 |----------------------|-------|
-| 0.075                | 0.109 |
+| 0.122                | 0.213 |
 ```
 
-![](img/results-mlp.png)
+![](img/results-mlp-fine-tuned.png)
 
-## Improvement ideas
+## Further improvement ideas
 
-1. **Tune the hyperparameters:**
-   1. Change the number of hidden layers
-   2. Adjust the learning rate
-   3. Add regularization
-2. **Tune training configuration:** I can use other parameters in `constants.py` such as the window length & hop length of frames as well as labeling threshold.
-3. **Treat input data as time series:** So far, each audio frame was treated as individual independent training example. However, it is hard to tell if a small piece of audio is a filler sound without context. Speech is actually a time series where order matters. I suspect that passing a sequence of audio frames instead of just one per training example would improve the results. RNN models such as LSTM can be used.
-4. **Sushi method:** Pass raw data with no preprocessing to the neural network.
+1. **Tune training configuration:** I can use other parameters in `constants.py` such as the window length & hop length of frames as well as labeling threshold.
+2. **Treat input data as time series:** So far, each audio frame was treated as individual independent training example. However, it is hard to tell if a small piece of audio is a filler sound without context. Speech is actually a time series where order matters. I suspect that passing a sequence of audio frames instead of just one per training example would improve the results. RNN models such as LSTM can be used.
+3. **Sushi method:** Pass raw data with no preprocessing to the neural network.
 
 # Conclusion
 
