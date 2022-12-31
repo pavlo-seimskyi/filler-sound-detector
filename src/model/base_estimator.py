@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 import torch
 
-from constants import FILLER_LABELING_THRESHOLD, BASE_PATH
+from constants import BASE_PATH, FILLER_LABELING_THRESHOLD
 from src import evaluate
 from src.evaluate import calculate_metrics
 
@@ -156,9 +156,11 @@ class BaseEstimator(torch.nn.Module):
         print("=" * len(text))
         print(text)
 
-    def save_best_model(self, dataset_name: str, path=f"{BASE_PATH}/saved_models/best_model.bin"):
+    def save_best_model(
+        self, dataset_name: str, path=f"{BASE_PATH}/saved_models/best_model.bin"
+    ):
         """Save the current model to path if it beats the previous best results,
-            based on the main selected metric."""
+        based on the main selected metric."""
         os.makedirs(os.path.dirname(path), exist_ok=True)
         valid_metrics = self.history[self.history["dataset"] == dataset_name]
         last_result = valid_metrics.iloc[-1][self.main_metric]
