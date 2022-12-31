@@ -56,19 +56,19 @@ Turns out in 95% of fillers last longer than 0.279 sec. A good fit for window le
 To evaluate the models, I followed a few principles:
 - Use different speakers in training & evaluation. This will ensure the model learns to detect filler sounds well for new speakers.
 - Use the same threshold to decide what proportion of filler sound in a frame makes it labeled as `filler` (80%).   
-- Use a suitable evaluation metric for imbalanced datasets. [Average precision score](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.average_precision_score.html) (area under the Precision-Recall Curve) seemed to be the best choice. It 1) is independent of the cutoff threshold and 2) focuses on the minority class and therefore is suitable for imbalanced datasets.
+- Use a suitable evaluation metric for imbalanced datasets. [Average precision (AP) score](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.average_precision_score.html) (area under the Precision-Recall Curve) seemed to be the best choice. It 1) is independent of the cutoff threshold and 2) focuses on the minority class and therefore is suitable for imbalanced datasets.
 
 ---
 
 # Modeling
 
-I tried out training two models: LightGBM & a multi-layer perceptron. LightGBM worked better out of the box.
+I tried out training two models: LightGBM & a multi-layer perceptron. Perceptron model bests the LightGBM after some fine-tuning.
 
 ```markdown
 | Model                  | Avg. precision score | F1    |
 |------------------------|----------------------|-------|
 | LightGBM               | 0.103                | 0.114 |
-| Multi-layer perceptron | 0.075                | 0.109 |
+| Multi-layer perceptron | 0.122                | 0.213 |
 ```
 
 ## LightGBM
@@ -97,7 +97,7 @@ Then I picked multi-layer perceptron as the first neural model to train. After h
 
 ## Further improvement ideas
 
-1. **Tune training configuration:** I can use other parameters in `constants.py` such as the window length & hop length of frames as well as labeling threshold.
+1. **Tune training configuration:** Tweak other parameters in `constants.py` such as the window length & hop length of frames as well as labeling threshold.
 2. **Treat input data as time series:** So far, each audio frame was treated as individual independent training example. However, it is hard to tell if a small piece of audio is a filler sound without context. Speech is actually a time series where order matters. I suspect that passing a sequence of audio frames instead of just one per training example would improve the results. RNN models such as LSTM can be used.
 3. **Sushi method:** Pass raw data with no preprocessing to the neural network.
 
