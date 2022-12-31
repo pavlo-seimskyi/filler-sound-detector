@@ -62,7 +62,7 @@ To evaluate the models, I followed a few principles:
 
 # Modeling
 
-I tried out training two models: LightGBM & a multi-layer perceptron. Perceptron model bests the LightGBM after some fine-tuning.
+I tried out training two models: LightGBM & a multi-layer perceptron. Perceptron beats LightGBM after some fine-tuning.
 
 ```markdown
 | Model                  | Avg. precision score | F1    |
