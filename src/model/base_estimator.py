@@ -69,28 +69,28 @@ class BaseEstimator(torch.nn.Module):
     def train_epoch(self, x: torch.Tensor, y: torch.Tensor) -> torch.Tensor:
         self.train()
         dataloader = self.build_dataloader(x, y)
-        y_pred = torch.Tensor([])
+        y_pred = torch.Tensor([]).to(self.device)
         for inputs, targets in dataloader:
             inputs, targets = inputs.to(self.device), targets.to(self.device)
             self.optimizer.zero_grad()
-            batch_pred = self.forward(inputs)
+            batch_pred = self(inputs)
             self.loss_fn.weight = self.get_class_weights(targets)
             loss = self.loss_fn(batch_pred, targets)
             loss.backward()
             self.optimizer.step()
-            self.scheduler.step()
-            y_pred = torch.cat((y_pred, batch_pred.cpu().detach()), axis=0)
+            y_pred = torch.cat((y_pred, batch_pred.detach()), dim=0)
+        self.scheduler.step() # step after completing the epoch!
         return y_pred
 
     def predict(self, x: torch.Tensor) -> torch.Tensor:
         self.eval()
         dataloader = self.build_dataloader(x)
-        y_pred = torch.Tensor([])
+        y_pred = torch.Tensor([]).to(self.device)
         for inputs in dataloader:
             inputs = inputs.to(self.device)
             with torch.no_grad():
-                batch_pred = self.forward(inputs)
-            y_pred = torch.cat((y_pred, batch_pred.cpu()), dim=0)
+                batch_pred = self(inputs)
+            y_pred = torch.cat((y_pred, batch_pred), dim=0)
         return y_pred
 
     def evaluate(self, x: torch.Tensor, y: torch.Tensor) -> None:
