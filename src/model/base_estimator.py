@@ -83,7 +83,7 @@ class BaseEstimator(torch.nn.Module):
             loss.backward()
             self.optimizer.step()
             y_pred = torch.cat((y_pred, batch_pred.detach()), dim=0)
-        self.scheduler.step() # step after completing the epoch!
+        self.scheduler.step()  # step after completing the epoch!
         return y_pred
 
     def predict(self, x: torch.Tensor) -> torch.Tensor:
