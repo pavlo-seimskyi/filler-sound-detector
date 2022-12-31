@@ -18,6 +18,8 @@ class BaseEstimator(torch.nn.Module):
         cutoff_thres: float = FILLER_LABELING_THRESHOLD,
         learning_rate: float = 1e-3,
         weight_decay: float = 1e-4,
+        lr_decay_step: int = 5,
+        lr_decay_magnitude: float = 0.1,
     ):
         super().__init__()
         self.loss_fn = loss_fn
@@ -27,6 +29,8 @@ class BaseEstimator(torch.nn.Module):
         self.history = pd.DataFrame()
         self.learning_rate = learning_rate
         self.weight_decay = weight_decay
+        self.lr_decay_step = lr_decay_step
+        self.lr_decay_magnitude = lr_decay_magnitude
         self.class_weights = None
         self.scheduler = None
         self.optimizer = None
@@ -48,7 +52,7 @@ class BaseEstimator(torch.nn.Module):
     def set_scheduler(self, step_size=5, gamma=0.1):
         # Learning rate decay - every 5 epochs decrease by 10x
         self.scheduler = torch.optim.lr_scheduler.StepLR(
-            self.optimizer, step_size=step_size, gamma=gamma
+            self.optimizer, step_size=self.lr_decay, gamma=self.lr_decay_magnitude
         )
 
     def fit(self, x_train, y_train, x_valid=None, y_valid=None, n_epochs=10):
