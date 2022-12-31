@@ -51,8 +51,8 @@ def calculate_metrics(
     y_test: Tensor, y_pred_proba: Tensor, threshold: float
 ) -> Dict[str, float]:
     """Calculate all metrics."""
-    y_test, y_pred_proba = y_test.cpu(), y_pred_proba.cpu()
     y_pred = convert_target_to_binary(y_pred_proba, threshold=threshold)
+    y_test, y_pred_proba, y_pred = y_test.cpu(), y_pred_proba.cpu(), y_pred.cpu()
     return {
         "f1": f1_score(y_test, y_pred, zero_division=0),
         "precision": precision_score(y_test, y_pred, zero_division=0),
@@ -61,7 +61,7 @@ def calculate_metrics(
     }
 
 
-def convert_target_to_binary(y: Tensor, threshold: float) -> np.ndarray:
+def convert_target_to_binary(y: Tensor, threshold: float) -> Tensor:
     """Apply the cutoff threshold, making predictions binary."""
     y = dtype_to_tensor(y).clone()
     return (y >= threshold).to(float32)
