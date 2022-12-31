@@ -52,7 +52,7 @@ class BaseEstimator(torch.nn.Module):
     def set_scheduler(self, step_size=5, gamma=0.1):
         # Learning rate decay - every 5 epochs decrease by 10x
         self.scheduler = torch.optim.lr_scheduler.StepLR(
-            self.optimizer, step_size=self.lr_decay, gamma=self.lr_decay_magnitude
+            self.optimizer, step_size=self.lr_decay_step, gamma=self.lr_decay_magnitude
         )
 
     def fit(self, x_train, y_train, x_valid=None, y_valid=None, n_epochs=10):
@@ -131,7 +131,7 @@ class BaseEstimator(torch.nn.Module):
         new_history = pd.DataFrame(
             data=[{**{"epoch": epoch, "dataset": dataset_name}, **metrics}]
         )
-        self.history = pd.concat((self.history, np.round(new_history, 3)), axis=0)
+        self.history = pd.concat((self.history, np.round(new_history, 4)), axis=0)
         self.history.reset_index(drop=True, inplace=True)
 
     def print_last_results(self, num_rows) -> None:
