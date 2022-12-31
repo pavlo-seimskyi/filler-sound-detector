@@ -23,6 +23,7 @@ class BaseEstimator(torch.nn.Module):
     ):
         super().__init__()
         self.loss_fn = loss_fn
+        print("2")
         self.batch_size = batch_size
         self.main_metric = main_metric
         self.cutoff_thres = cutoff_thres
