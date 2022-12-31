@@ -165,7 +165,6 @@ class BaseEstimator(torch.nn.Module):
         valid_metrics = self.history[self.history["dataset"] == dataset_name]
         last_result = valid_metrics.iloc[-1][self.main_metric]
         if last_result > self.best_result:
-            print(f"saving {dataset_name}")
             torch.save(self.state_dict(), path)
             self.best_result = last_result
 
