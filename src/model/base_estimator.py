@@ -1,10 +1,11 @@
+import os
 from typing import *
 
 import numpy as np
 import pandas as pd
 import torch
 
-from constants import FILLER_LABELING_THRESHOLD
+from constants import FILLER_LABELING_THRESHOLD, BASE_PATH
 from src import evaluate
 from src.evaluate import calculate_metrics
 
@@ -23,20 +24,20 @@ class BaseEstimator(torch.nn.Module):
     ):
         super().__init__()
         self.loss_fn = loss_fn
-        print("2")
         self.batch_size = batch_size
-        self.main_metric = main_metric
-        self.cutoff_thres = cutoff_thres
-        self.history = pd.DataFrame()
         self.learning_rate = learning_rate
         self.weight_decay = weight_decay
         self.lr_decay_step = lr_decay_step
         self.lr_decay_magnitude = lr_decay_magnitude
+        self.cutoff_thres = cutoff_thres
         self.class_weights = None
         self.scheduler = None
         self.optimizer = None
         self.def_device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.to(self.def_device)
+        self.history = pd.DataFrame()
+        self.main_metric = main_metric
+        self.best_result = 0
 
     def forward(self, x):
         pass
@@ -65,11 +66,15 @@ class BaseEstimator(torch.nn.Module):
             y_train_preds = self.train_epoch(x_train, y_train)
             self.store_metrics(epoch, y_train, y_train_preds, name="train")
             num_rows = 1
+            best_model_based_on = "train"
             if x_valid is not None and y_valid is not None:
                 y_valid_preds = self.predict(x_valid)
                 self.store_metrics(epoch, y_valid, y_valid_preds, name="valid")
+                best_model_based_on = "valid"
                 num_rows += 1
             self.print_last_results(num_rows)
+            self.save_best_model(dataset_name=best_model_based_on)
+        self.load_best_model()
 
     def train_epoch(self, x: torch.Tensor, y: torch.Tensor) -> torch.Tensor:
         self.train()
@@ -150,3 +155,18 @@ class BaseEstimator(torch.nn.Module):
         text = " | ".join(text)
         print("=" * len(text))
         print(text)
+
+    def save_best_model(self, dataset_name: str, path=f"{BASE_PATH}/saved_models/best_model.bin"):
+        """Save the current model to path if it beats the previous best results,
+            based on the main selected metric."""
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        valid_metrics = self.history[self.history["dataset"] == dataset_name]
+        last_result = valid_metrics.iloc[-1][self.main_metric]
+        if last_result > self.best_result:
+            print(f"saving {dataset_name}")
+            torch.save(self.state_dict(), path)
+            self.best_result = last_result
+
+    def load_best_model(self, path=f"{BASE_PATH}/saved_models/best_model.bin"):
+        """Load the best model params from path."""
+        self.load_state_dict(torch.load(path))
