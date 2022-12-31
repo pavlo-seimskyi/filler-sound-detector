@@ -68,7 +68,7 @@ I tried out training two models: LightGBM & a multi-layer perceptron. Perceptron
 | Model                  | Avg. precision score | F1    |
 |------------------------|----------------------|-------|
 | LightGBM               | 0.103                | 0.114 |
-| Multi-layer perceptron | 0.122                | 0.213 |
+| Multi-layer perceptron | 0.121                | 0.205 |
 ```
 
 ## LightGBM
@@ -90,7 +90,7 @@ Then I picked multi-layer perceptron as the first neural model to train. After h
 ```
 | Avg. precision score | F1    |
 |----------------------|-------|
-| 0.122                | 0.213 |
+| 0.121                | 0.205 |
 ```
 
 ![](img/results-mlp-fine-tuned.png)
