@@ -24,8 +24,8 @@ def _evaluate(
     :param threshold: cutoff point to determine the final prediction
     :return: None
     """
-    y_test = dtype_to_tensor(y_test)
-    y_pred_proba = dtype_to_tensor(y_pred_proba)
+    y_test, y_pred_proba = dtype_to_tensor(y_test), dtype_to_tensor(y_pred_proba)
+    y_test, y_pred_proba = y_test.cpu(), y_pred_proba.cpu()
 
     metrics = calculate_metrics(y_test, y_pred_proba, threshold)
     print(", ".join([f"{name}: {round(value, 3)}" for name, value in metrics.items()]))
@@ -40,9 +40,9 @@ def _evaluate(
 def dtype_to_tensor(x: Iterable[Any]) -> Tensor:
     """Make sure data type is numpy array."""
     if isinstance(x, Tensor):
-        return x.cpu()
+        return x
     elif isinstance(x, (np.ndarray, list, tuple)):
-        return Tensor(x).cpu()
+        return Tensor(x)
     else:
         raise Exception(f"The data type must be a sequence, got {type(x)} instead.")
 
@@ -51,6 +51,7 @@ def calculate_metrics(
     y_test: Tensor, y_pred_proba: Tensor, threshold: float
 ) -> Dict[str, float]:
     """Calculate all metrics."""
+    y_test, y_pred_proba = y_test.cpu(), y_pred_proba.cpu()
     y_pred = convert_target_to_binary(y_pred_proba, threshold=threshold)
     return {
         "f1": f1_score(y_test, y_pred, zero_division=0),

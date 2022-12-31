@@ -21,7 +21,7 @@ class BaseEstimator(torch.nn.Module):
         lr_decay_step: int = 5,
         lr_decay_magnitude: float = 0.1,
     ):
-        super().__init__()
+        super(BaseEstimator, self).__init__()
         self.loss_fn = loss_fn
         self.batch_size = batch_size
         self.main_metric = main_metric
@@ -102,7 +102,7 @@ class BaseEstimator(torch.nn.Module):
         evaluate(y, y_pred, self.cutoff_thres)
 
     def store_metrics(self, epoch, y_true, y_pred, name):
-        metrics = calculate_metrics(y_true.cpu(), y_pred.cpu(), self.cutoff_thres)
+        metrics = calculate_metrics(y_true, y_pred, self.cutoff_thres)
         self.loss_fn.weight = self.get_class_weights(y_true)
         metrics["loss"] = self.loss_fn(y_pred, y_true).item()
         self.add_to_history(epoch=epoch, dataset_name=name, metrics=metrics)
