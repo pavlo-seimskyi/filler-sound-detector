@@ -103,7 +103,8 @@ class BaseEstimator(torch.nn.Module):
         evaluate(y, y_pred, self.cutoff_thres)
 
     def store_metrics(self, epoch, y_true, y_pred, name):
-        y_true, y_pred = y_true.cpu(), y_pred.cpu()
+        y_true = y_true.to(torch.device("cpu"))
+        y_pred = y_pred.to(torch.device("cpu"))
         metrics = calculate_metrics(y_true, y_pred, self.cutoff_thres)
         self.loss_fn.weight = self.get_class_weights(y_true)
         metrics["loss"] = self.loss_fn(y_pred, y_true).item()
