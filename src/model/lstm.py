@@ -2,7 +2,7 @@ import torch
 from torch.utils.data import DataLoader
 
 from src.model.base_estimator import BaseEstimator
-from src.model.data_builder import OneSampleDataset
+from src.model.data_builder import SlidingWindowDataset
 
 
 class LSTM(BaseEstimator):
@@ -12,12 +12,16 @@ class LSTM(BaseEstimator):
         n_hidden: int,
         n_layers: int,
         n_out: int,
-        dropout_proba=0,
+        seq_len: int,
+        y_position_in_sequence: int = None,
+        dropout_proba: float = 0.0,
         **kwargs
     ):
         super().__init__(**kwargs)
         self.n_layers = n_layers
         self.n_hidden = n_hidden
+        self.seq_len = seq_len
+        self.y_position_in_sequence = y_position_in_sequence
         self.lstm = torch.nn.LSTM(
             input_size=n_features,
             hidden_size=n_hidden,
@@ -48,8 +52,7 @@ class LSTM(BaseEstimator):
         return self.sigmoid(out)
 
     def build_dataloader(self, x, y=None):
-        # We will create non-overlapping sequences for now
-        # x = x.unsqueeze(dim=1)
-        # y = y.unsqueeze(dim=1) if y is not None else None
-        dataset = OneSampleDataset(x, y)
+        dataset = SlidingWindowDataset(
+            x, y, seq_len=self.seq_len, y_position=self.y_position_in_sequence
+        )
         return DataLoader(dataset=dataset, batch_size=self.batch_size, shuffle=False)
